@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    --background: #ffffff;
+    --foreground: #131210;
+
+    /* Taupe color palette */
+    --color-taupe-50: #f3f2f1;
+    --color-taupe-100: #e8e5e3;
+    --color-taupe-200: #d1cbc7;
+    --color-taupe-300: #b9b1ac;
+    --color-taupe-400: #a29790;
+    --color-taupe-500: #8b7e74;
+    --color-taupe-600: #6f645d;
+    --color-taupe-700: #534b46;
+    --color-taupe-800: #38322e;
+    --color-taupe-900: #1c1917;
+    --color-taupe-950: #131210;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+
+    /* Taupe colors for Tailwind */
+    --color-taupe-50: var(--color-taupe-50);
+    --color-taupe-100: var(--color-taupe-100);
+    --color-taupe-200: var(--color-taupe-200);
+    --color-taupe-300: var(--color-taupe-300);
+    --color-taupe-400: var(--color-taupe-400);
+    --color-taupe-500: var(--color-taupe-500);
+    --color-taupe-600: var(--color-taupe-600);
+    --color-taupe-700: var(--color-taupe-700);
+    --color-taupe-800: var(--color-taupe-800);
+    --color-taupe-900: var(--color-taupe-900);
+    --color-taupe-950: var(--color-taupe-950);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    :root {
+        --background: #131210;
+        --foreground: #ededed;
+    }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
 }
