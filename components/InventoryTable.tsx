@@ -150,7 +150,7 @@ export default function InventoryTable() {
                 <td className="px-5 py-5 border-b border-taupe-200 dark:border-taupe-700 bg-white dark:bg-taupe-950 text-sm">
                   <div className="flex items-center">
                     <div className="ml-3">
-                      <p className="text-taupe-900 dark:text-taupe-200 whitespace-no-wrap">
+                      <p className="capitalize text-taupe-900 dark:text-taupe-200 whitespace-no-wrap">
                         {item.name}
                       </p>
                     </div>
