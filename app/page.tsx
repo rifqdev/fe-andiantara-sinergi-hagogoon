@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useInventoryStore } from "../store/inventoryStore";
 import AddItemModal from "../components/AddItemModal";
 import InventoryTable from "../components/InventoryTable";
+import SearchAndFilters from "../components/SearchAndFilters";
+import Pagination from "../components/Pagination";
 
 export default function InventoryPage() {
   const { items, addItem, initializeItems } = useInventoryStore();
@@ -52,7 +54,11 @@ export default function InventoryPage() {
         </button>
       </div>
 
+      <SearchAndFilters />
+
       <InventoryTable />
+
+      <Pagination />
 
       <AddItemModal
         isOpen={isModalOpen}
