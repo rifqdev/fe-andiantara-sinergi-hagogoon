@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { z } from "zod";
 
 interface AddItemModalProps {
   isOpen: boolean;
@@ -18,17 +19,57 @@ export default function AddItemModal({
     stock: "",
   });
 
+  const [errors, setErrors] = useState<{ name?: string; stock?: string }>({});
+
+  // Zod schema for validation
+  const itemSchema = z.object({
+    name: z
+      .string()
+      .min(1, "Nama barang harus diisi")
+      .max(100, "Nama barang maksimal 100 karakter")
+      .trim(),
+    stock: z
+      .string()
+      .min(1, "Stok harus diisi")
+      .transform((val) => parseInt(val))
+      .pipe(z.number().int().min(0, "Stok tidak boleh negatif")),
+  });
+
   const handleAddItem = () => {
-    if (newItem.name.trim() && newItem.stock !== "") {
-      const stockValue = parseInt(newItem.stock);
-      if (!isNaN(stockValue) && stockValue >= 0) {
-        onAddItem(newItem.name.trim(), stockValue);
-        setNewItem({
-          name: "",
-          stock: "",
-        });
-        onClose();
-      }
+    // Clear previous errors
+    setErrors({});
+
+    // Validate with Zod
+    const result = itemSchema.safeParse({
+      name: newItem.name,
+      stock: newItem.stock,
+    });
+
+    if (!result.success) {
+      // Extract and set validation errors
+      const fieldErrors: { name?: string; stock?: string } = {};
+      result.error.issues.forEach((issue) => {
+        const fieldName = issue.path[0] as string;
+        fieldErrors[fieldName as keyof typeof fieldErrors] = issue.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    // If validation passes, add the item
+    onAddItem(result.data.name.trim(), result.data.stock);
+    setNewItem({
+      name: "",
+      stock: "",
+    });
+    onClose();
+  };
+
+  const handleInputChange = (field: "name" | "stock", value: string) => {
+    setNewItem({ ...newItem, [field]: value });
+    // Clear error for this field when user starts typing
+    if (errors[field]) {
+      setErrors({ ...errors, [field]: undefined });
     }
   };
 
@@ -48,10 +89,19 @@ export default function AddItemModal({
           <input
             type="text"
             value={newItem.name}
-            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-            className="w-full px-3 py-2 border border-taupe-300 dark:border-taupe-600 rounded-md focus:outline-none focus:ring-2 focus:ring-taupe-500 dark:bg-taupe-900 dark:text-taupe-100"
+            onChange={(e) => handleInputChange("name", e.target.value)}
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-taupe-900 dark:text-taupe-100 ${
+              errors.name
+                ? "border-red-500 focus:ring-red-500"
+                : "border-taupe-300 dark:border-taupe-600 focus:ring-taupe-500"
+            }`}
             placeholder="Masukkan nama barang"
           />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-500 dark:text-red-400">
+              {errors.name}
+            </p>
+          )}
         </div>
 
         <div className="mb-6">
@@ -61,16 +111,20 @@ export default function AddItemModal({
           <input
             type="number"
             value={newItem.stock}
-            onChange={(e) =>
-              setNewItem({
-                ...newItem,
-                stock: e.target.value,
-              })
-            }
-            className="w-full px-3 py-2 border border-taupe-300 dark:border-taupe-600 rounded-md focus:outline-none focus:ring-2 focus:ring-taupe-500 dark:bg-taupe-900 dark:text-taupe-100"
+            onChange={(e) => handleInputChange("stock", e.target.value)}
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-taupe-900 dark:text-taupe-100 ${
+              errors.stock
+                ? "border-red-500 focus:ring-red-500"
+                : "border-taupe-300 dark:border-taupe-600 focus:ring-taupe-500"
+            }`}
             placeholder="Masukkan jumlah stok"
             min="0"
           />
+          {errors.stock && (
+            <p className="mt-1 text-sm text-red-500 dark:text-red-400">
+              {errors.stock}
+            </p>
+          )}
         </div>
 
         <div className="flex justify-end space-x-3">
